@@ -1,0 +1,88 @@
+//
+//  ViewController.m
+//  Poverty alleviation
+//
+//  Created by 吴畏 on 2017/12/26.
+//  Copyright © 2017年 吴畏. All rights reserved.
+//
+
+#import "ViewController.h"
+#import "LoginViewController.h"
+#import "AttenceViewController.h"
+#import "HelpViewController.h"
+#import "MessageViewController.h"
+#import "MineViewController.h"
+#import "LoginViewController.h"
+#import "MissionViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view, typically from a nib.
+    
+    HelpViewController *helpvc = [HelpViewController alloc];
+    UINavigationController *helpn = [[UINavigationController alloc]initWithRootViewController:helpvc];
+    UITabBarItem *helpI = [[UITabBarItem alloc]initWithTitle:@"帮扶指导" image:[UIImage imageNamed:@"home_icon1_s"] selectedImage:[UIImage imageNamed:@"home_icon1_s-1"]];
+    helpn.tabBarItem = helpI;
+    
+    AttenceViewController *attencevc = [AttenceViewController alloc];
+    UINavigationController *attencen = [[UINavigationController alloc]initWithRootViewController:attencevc];
+    UITabBarItem *attenceI = [[UITabBarItem alloc]initWithTitle:@"考勤记账" image:[UIImage imageNamed:@"home_icon2_s"] selectedImage:[UIImage imageNamed:@"home_icon2_s-1"]];
+    attencen.tabBarItem = attenceI;
+    
+    MessageViewController *messagevc = [MessageViewController alloc];
+    UINavigationController *messagen = [[UINavigationController alloc]initWithRootViewController:messagevc];
+    UITabBarItem *messageI = [[UITabBarItem alloc]initWithTitle:@"党建扶贫" image:[UIImage imageNamed:@"home_icon3+-2"] selectedImage:[UIImage imageNamed:@"home_icon3_s-1"]];
+    messagen.tabBarItem = messageI;
+    
+    MineViewController *minevc = [MineViewController alloc];
+    UINavigationController *minen = [[UINavigationController alloc]initWithRootViewController:minevc];
+    UITabBarItem *mineI = [[UITabBarItem alloc]initWithTitle:@"我" image:[UIImage imageNamed:@"home_icon4_s"] selectedImage:[UIImage imageNamed:@"home_icon4_s-1"]];
+    minen.tabBarItem = mineI;
+    
+    MissionViewController *missvc = [MissionViewController alloc];
+    UINavigationController *missn = [[UINavigationController alloc]initWithRootViewController:missvc];
+    UITabBarItem *missI = [[UITabBarItem alloc]initWithTitle:@"扶贫任务" image:[UIImage imageNamed:@"home_icon5"] selectedImage:[UIImage imageNamed:@"home_icon5_s"]];
+    missn.tabBarItem = missI;
+    
+    NSArray *arr = @[helpn,attencen,messagen,missn,minen];
+    
+    [self setViewControllers:arr animated:YES];
+    
+   
+    
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if ([ZJStoreDefaults getObjectForKey:@"userinfo"]) {
+        NSDictionary *userdic = [NSDictionary dictionary];
+        userdic = [ZJStoreDefaults getObjectForKey:@"userinfo"];
+        NSDictionary *dict = @{@"userPhone":[userdic objectForKey:@"userPhone"],@"password":[userdic objectForKey:@"password"]};
+        [HTTPRequest postWithURL:@"yrycapi/user/login" method:@"POST" params:dict ProgressHUD:self.Hud controller:self response:^(id json) {
+            NSLog(@"success:%@",json);
+            NSDictionary *dic = [NSDictionary dictionaryWithDictionary:json];
+            [ZJStoreDefaults setObject:dic forKey:@"userinfo"];
+            
+        } error400Code:^(id failure) {
+            NSLog(@"error:%@",failure);
+        }];
+    }else{
+        LoginViewController *lgvc = [[LoginViewController alloc] init];
+        [self presentViewController:lgvc animated:YES completion:nil];
+    }
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+@end

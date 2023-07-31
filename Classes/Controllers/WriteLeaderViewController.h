@@ -1,0 +1,19 @@
+//
+//  WriteLeaderViewController.h
+//  Poverty alleviation
+//
+//  Created by 中科禹贡 on 2018/4/9.
+//  Copyright © 2018年 吴畏. All rights reserved.
+//
+
+#import "BaseViewController.h"
+
+typedef void(^CallBackBlcok) (NSString *text);
+
+@interface WriteLeaderViewController : BaseViewController
+
+@property (nonatomic,copy)CallBackBlcok callBackBlock;
+
+@property (nonatomic,copy)NSDictionary *dict;
+
+@end

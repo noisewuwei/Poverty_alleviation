@@ -1,0 +1,92 @@
+//
+//  InViewController.m
+//  Poverty alleviation
+//
+//  Created by 中科禹贡 on 2018/4/3.
+//  Copyright © 2018年 吴畏. All rights reserved.
+//
+
+#import "InViewController.h"
+
+@interface InViewController (){
+    UILabel *titleLab;
+    UILabel *timeLab;
+    UITextView *conLab;
+}
+
+@end
+
+@implementation InViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor colorHexString:@"EFEFEF"];
+    
+    self.title = @"我收到的任务";
+    [self createBarLeftWithImage:@"nav_return"];
+    
+    titleLab = [[UILabel alloc] initWithFrame:CGRectMake(zScreenWidth/2-100, zNavigationHeight+20, 200, 25)];
+    titleLab.textColor = [UIColor blackColor];
+    titleLab.textAlignment = NSTextAlignmentCenter;
+    titleLab.font = [UIFont systemFontOfSize:15];
+    [self.view addSubview:titleLab];
+    
+    timeLab = [[UILabel alloc] initWithFrame:CGRectMake(zScreenWidth/2-100, zNavigationHeight+20+25, 200, 20)];
+    timeLab.textColor = [UIColor colorHexString:@"888888"];
+    timeLab.textAlignment = NSTextAlignmentCenter;
+    timeLab.font = [UIFont systemFontOfSize:14];
+    [self.view addSubview:timeLab];
+    
+    UIView *back = [[UIView alloc] initWithFrame:CGRectMake(15, timeLab.frame.origin.y+20+20, zScreenWidth-30, zScreenHeight-250)];
+    back.layer.masksToBounds = YES;
+    back.layer.cornerRadius = 4;
+    back.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:back];
+    
+    conLab = [[UITextView alloc] initWithFrame:CGRectMake(23, 19, zScreenWidth-15*2-23*2, back.frame.size.height-19-80)];
+    conLab.textColor = [UIColor colorHexString:@"888888"];
+    conLab.textAlignment = NSTextAlignmentLeft;
+    conLab.font = [UIFont systemFontOfSize:13];
+    conLab.editable = NO;
+    [back addSubview:conLab];
+    
+    
+    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(back.frame.size.width/2-40, back.frame.size.height-15-39, 80, 39)];
+    btn.layer.masksToBounds = YES;
+    btn.layer.cornerRadius = 6;
+    btn.backgroundColor = [UIColor colorHexString:@"1a2f55"];
+    [btn setTitle:@"完成" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    btn.titleLabel.font = [UIFont systemFontOfSize:14];
+    [btn addTarget:self action:@selector(done) forControlEvents:UIControlEventTouchUpInside];
+    [back addSubview:btn];
+    
+    titleLab.text = @"辣辣鸡阿轲那就算了";
+    timeLab.text = @"38987329873987389";
+    conLab.text = @"你卡上你家扩散撒娇哭你卡上你家开始拿手机看那款能看见安康金三角可能看见阿信你看看就是那科技兴农看你卡上你家扩散撒娇哭你卡上你家开始拿手机看那款能看见安康金三角可能看见阿信你看看就是那科技兴农看你卡上你家扩散撒娇哭你卡上你家开始拿手机看那款能看见安康金三角可能看见阿信你看看就是那科技兴农看你卡上你家扩散撒娇哭你卡上你家开始拿手机看那款能看见安康金三角可能看见阿信你看看就是那科技兴农看";
+    
+    
+    // Do any additional setup after loading the view.
+}
+
+- (void)done{
+    NSLog(@"done");
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

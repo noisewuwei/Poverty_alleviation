@@ -1,0 +1,155 @@
+//
+//  LoginViewController.m
+//  Poverty alleviation
+//
+//  Created by 中科禹贡 on 2018/3/13.
+//  Copyright © 2018年 吴畏. All rights reserved.
+//
+
+#import "LoginViewController.h"
+#import "ViewController.h"
+#import "AppDelegate.h"
+
+@interface LoginViewController ()<UITextFieldDelegate>{
+    UITextField *numtext;
+    UITextField *pwtext;
+}
+
+@end
+
+@implementation LoginViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    UIImageView *imageview = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, zScreenWidth, 190)];
+
+    imageview.image = [UIImage imageNamed:@"login_bg"];
+
+    [self.view addSubview:imageview];
+    
+    UIView *loginview = [[UIView alloc]initWithFrame:CGRectMake(23, 130, zScreenWidth-46, 340)];
+    loginview.layer.masksToBounds = NO;
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:loginview.bounds];
+    loginview.layer.cornerRadius = 3;
+    loginview.layer.shadowOffset = CGSizeMake(0, 5);
+    loginview.layer.shadowOpacity = 0.3f;
+    loginview.layer.shadowPath = shadowPath.CGPath;
+    loginview.layer.shadowColor = [[UIColor colorHexString:@"9BA2AF"] CGColor];
+    
+    loginview.backgroundColor = [UIColor whiteColor];
+    
+    [self.view addSubview:loginview];
+    
+    UIButton *loginbtn = [[UIButton alloc]initWithFrame:CGRectMake(23, loginview.bounds.size.height-40-44, zScreenWidth-46-46, 44)];
+    [loginbtn setTitle:@"登 录" forState:UIControlStateNormal];
+    [loginbtn addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
+    loginbtn.layer.masksToBounds = YES;
+    loginbtn.layer.cornerRadius = 4;
+    loginbtn.backgroundColor = [UIColor colorHexString:@"1a2f55"];
+    
+    UIImageView *phoneimage = [[UIImageView alloc]initWithFrame:CGRectMake(31, 146, 13, 25)];
+    phoneimage.image = [UIImage imageNamed:@"login_phone"];
+    [phoneimage sizeToFit];
+    
+    UIImageView *lockimage = [[UIImageView alloc]initWithFrame:CGRectMake(31, 146+50, 13, 25)];
+    lockimage.image = [UIImage imageNamed:@"login_password"];
+    [lockimage sizeToFit];
+    
+    numtext = [[UITextField alloc]initWithFrame:CGRectMake(31+13+13, 146-8, loginview.bounds.size.width-(31+13+13+13), 35)];
+    numtext.placeholder = @"请输入手机号";
+    
+    pwtext = [[UITextField alloc]initWithFrame:CGRectMake(31+13+13, 146-8+50, loginview.bounds.size.width-(31+13+13+13), 35)];
+    pwtext.placeholder = @"请输入密码";
+    
+    pwtext.secureTextEntry = YES;
+    
+    numtext.delegate = self;
+    pwtext.delegate = self;
+    
+    numtext.returnKeyType = UIReturnKeyDone;
+    pwtext.returnKeyType = UIReturnKeyDone;
+    
+    UIImageView *logo = [[UIImageView alloc]initWithFrame:CGRectMake(loginview.bounds.size.width/2-24.5, 29, 49, 49)];
+    logo.image = [UIImage imageNamed:@"login_logo"];
+    
+    
+    UIImageView *down = [[UIImageView alloc]initWithFrame:CGRectMake(zScreenWidth/2-151/2, zScreenHeight-55-17, 151, 17)];
+    down.image = [UIImage imageNamed:@"login_slogan"];
+    down.contentMode = UIViewContentModeCenter;
+    [self.view addSubview:down];
+    
+    [loginview addSubview:logo];
+    [loginview addSubview:numtext];
+    [loginview addSubview:pwtext];
+    [loginview addSubview:phoneimage];
+    [loginview addSubview:lockimage];
+    [loginview addSubview:loginbtn];
+    
+    
+    
+    // Do any additional setup after loading the view.
+}
+
+- (void)login{
+    
+    NSDictionary *dic = @{@"userPhone":numtext.text,@"password":pwtext.text};
+    
+    [HTTPRequest postWithURL:@"yrycapi/user/login" method:@"POST" params:dic ProgressHUD:nil controller:self response:^(id json) {
+        NSLog(@"success:%@",json);
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        dic = [NSMutableDictionary dictionaryWithDictionary:json];
+//        UserModel *newModel = [UserModel initDetailWithDict:dic];
+        [ZJStoreDefaults setObject:dic forKey:@"userinfo"];
+        
+        AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        ViewController *tab = (ViewController *)delegate.window.rootViewController;
+        tab.selectedIndex = 0;
+        
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"changeinfo" object:nil userInfo:nil];
+        
+        [self dismissViewControllerAnimated:YES completion:^{
+            NSLog(@"登陆成功");
+        }];
+        
+    } error400Code:^(id failure) {
+        NSLog(@"error:%@",failure);
+    }];
+    
+    
+    
+    
+//    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    ViewController *tab = (ViewController *)delegate.window.rootViewController;
+//    tab.selectedIndex = 0;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    if (textField == numtext) {
+        [numtext resignFirstResponder];
+    }else if (textField == pwtext){
+        [pwtext resignFirstResponder];
+    }
+    return YES;
+}
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end
